@@ -23,6 +23,7 @@
                         <Font name="Gabriola" size="55.0" />
                     </font>
                 </Label>
+            <Label fx:id="warningText" layoutX="177.0" layoutY="239.0" prefHeight="18.0" prefWidth="223.0" />
             </children>
         </AnchorPane>
         <Label layoutX="197.0" layoutY="14.0" text="Ресторан" textFill="WHITE">
@@ -37,4 +38,3 @@
         </Button>
     </children>
 </AnchorPane>
-
