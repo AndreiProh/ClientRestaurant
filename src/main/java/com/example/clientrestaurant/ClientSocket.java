@@ -72,32 +72,30 @@ public class ClientSocket {
         jsonMessage = new Gson().fromJson(finalMessageFromServer, JsonObject.class);
         String typeOfMessage = jsonMessage.get("type").getAsString();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("signup.fxml"));
-        Parent root = loader.load();
-        // Получение контроллера
-
         if (typeOfMessage.equals("logup")) {
             int registeredStatus = jsonMessage.get("status").getAsInt();
             System.out.println("in IF");
             switch (registeredStatus) {
                 case 0:
-                    controller.setLabelWarningText("Попробуйте позже");
                     signUpController.setLabelWarningText("Попробуйте позже");
-
                     break;
                 case 1:
-                    System.out.println("in case 1");
-                    controller.setLabelWarningText("Вы успешно зарегистрированы");
                     signUpController.setLabelWarningText("Вы успешно зарегистрированы");
                     break;
                 case 2:
-                    controller.setLabelWarningText("Пользователь с таким логином уже существует");
                     signUpController.setLabelWarningText("Пользователь с таким логином уже существует");
                     break;
                 default:
-                    Platform.runLater(() -> controller.setLabelWarningText("Что-то пошло не так"));
+                     signUpController.setLabelWarningText("Что-то пошло не так");
             }
 
+        }
+
+        if (typeOfMessage.equals(Const.AUTHORIZATION)){
+            if (jsonMessage.get(Const.STATUS).getAsInt() == 1) {
+                controller.setLabelWarningText("Вы вошли как " + controller.getLogin_field());
+            } else
+                controller.setLabelWarningText("Неверное имя пользователя или пароль");
         }
     }
 

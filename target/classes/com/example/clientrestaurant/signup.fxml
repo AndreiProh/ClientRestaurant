@@ -25,7 +25,7 @@
                 </Label>
                 <TextField fx:id="signUpLastName" layoutX="297.0" layoutY="74.0" prefHeight="26.0" prefWidth="203.0" promptText="Фамилия" />
                 <TextField fx:id="signUpFirstName" layoutX="297.0" layoutY="124.0" prefHeight="26.0" prefWidth="203.0" promptText="Имя" />
-            <Label fx:id="labelWarningText" layoutX="205.0" layoutY="167.0" prefHeight="18.0" prefWidth="140.0">
+            <Label fx:id="labelWarningText" layoutX="132.0" layoutY="167.0" prefHeight="26.0" prefWidth="280.0">
                <font>
                   <Font size="16.0" />
                </font>

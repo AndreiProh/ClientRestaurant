@@ -11,12 +11,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Controller {
@@ -42,7 +40,35 @@ public class Controller {
     @FXML
     private Label warningText;
 
+    @FXML
+    private TextArea orderTextArea;
+
+    @FXML
+    private Text authorizationText;
+
+    @FXML
+    private Button dish1AddButton;
+
+    @FXML
+    private TextField dish1QuantityText;
+
+    @FXML
+    private Button dish1SubButton;
+
+    @FXML
+    private Button dish2AddButton;
+
+    @FXML
+    private TextField dish2QuantityText;
+
+    @FXML
+    private Button dish2SubButton;
+
     private ClientSocket clientSocket;
+
+    public String getLogin_field() {
+        return this.login_field.getText();
+    }
 
     public void setClientSocket(ClientSocket clientSocket) {
         this.clientSocket = clientSocket;
@@ -58,6 +84,7 @@ public class Controller {
             authLogInButton.setOnAction(actionEvent -> {
                 String userName = login_field.getText().trim();
                 String password = password_field.getText().trim();
+                setLabelWarningText("");
 
                 if (checkAllStringFilled(userName, password)) {
                     JsonObject jsonObject = new JsonObject();
@@ -67,8 +94,6 @@ public class Controller {
                     ClientSocket.sendMessage(new Gson().toJson(jsonObject));
                 } else
                     setLabelWarningText("Заполните все поля");
-
-
             });
         // Кнопка "Зарегистрироваться":
             loginSignUpButton.setOnAction(actionEvent -> {
@@ -92,10 +117,41 @@ public class Controller {
                 stage.showAndWait();
             });
 
+            dish1AddButton.setOnAction(actionEvent -> {
+                addDishInOrder(1);
+                int quantity = Integer.parseInt(dish1QuantityText.getText());
+                quantity++;
+                dish1QuantityText.setText("" + quantity);
+            });
+            dish1SubButton.setOnAction(actionEvent -> {
+                subtractDishFromOrder(1);
+                int quantity = Integer.parseInt(dish1QuantityText.getText());
+                if (quantity != 0) {
+                    quantity--;
+                    dish1QuantityText.setText("" + quantity);
+                }
+            });
+
     }
 
-    private void sendMsg(String msg) {
+    private void subtractDishFromOrder(int id) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", Const.ORDER);
+        jsonObject.addProperty(Const.STATUS, Const.SUBTRACT);
+        jsonObject.addProperty(Const.ID_DISH, id);
+        sendMsg(jsonObject);
+    }
 
+    private void addDishInOrder(int id) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", Const.ORDER);
+        jsonObject.addProperty(Const.STATUS, Const.ADD);
+        jsonObject.addProperty(Const.ID_DISH, id);
+        sendMsg(jsonObject);
+    }
+
+    private void sendMsg(JsonObject jsonObject) {
+        ClientSocket.sendMessage(new Gson().toJson(jsonObject));
     }
 
     private boolean checkAllStringFilled(String... strings) {

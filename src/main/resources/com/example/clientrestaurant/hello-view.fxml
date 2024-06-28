@@ -3,35 +3,57 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #FF7F50;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.clientrestaurant.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="502.0" prefWidth="832.0" style="-fx-background-color: #FF7F50;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.clientrestaurant.Controller">
     <children>
-        <AnchorPane layoutY="97.0" prefHeight="302.0" prefWidth="600.0" style="-fx-background-color: #fafafa;">
+        <AnchorPane layoutX="-3.0" layoutY="81.0" prefHeight="424.0" prefWidth="838.0" style="-fx-background-color: #fafafa;">
             <children>
-                <TextField fx:id="login_field" layoutX="159.0" layoutY="82.0" prefHeight="26.0" prefWidth="257.0" promptText="Логин" />
-                <PasswordField fx:id="password_field" layoutX="159.0" layoutY="124.0" prefHeight="26.0" prefWidth="258.0" promptText="Пароль" />
-                <Button fx:id="authLogInButton" layoutX="242.0" layoutY="172.0" mnemonicParsing="false" prefHeight="49.0" prefWidth="87.0" style="-fx-background-color: #FF4500;" text="Войти" textFill="#fcfcfc">
+                <TextField fx:id="login_field" layoutX="660.0" layoutY="59.0" prefHeight="26.0" prefWidth="161.0" promptText="Логин" />
+                <PasswordField fx:id="password_field" layoutX="659.0" layoutY="94.0" prefHeight="26.0" prefWidth="162.0" promptText="Пароль" />
+                <Button fx:id="authLogInButton" layoutX="734.0" layoutY="136.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="87.0" style="-fx-background-color: #FF4500;" text="Войти" textFill="#fcfcfc">
                     <font>
-                        <Font name="System Bold" size="20.0" />
+                        <Font name="System Bold" size="16.0" />
                     </font>
                 </Button>
-                <Label layoutX="163.0" layoutY="6.0" text="Авторизация" textFill="#917878">
+                <Label layoutX="667.0" layoutY="14.0" text="Авторизация" textFill="#917878">
                     <font>
-                        <Font name="Gabriola" size="55.0" />
+                        <Font name="Gabriola" size="30.0" />
                     </font>
                 </Label>
             <Label fx:id="warningText" layoutX="177.0" layoutY="239.0" prefHeight="18.0" prefWidth="223.0" />
+            <Label contentDisplay="CENTER" layoutX="86.0" layoutY="20.0" prefHeight="38.0" prefWidth="44.0" text="Блюдо1" />
+            <Button fx:id="dish1AddButton" layoutX="58.0" layoutY="59.0" mnemonicParsing="false" text="+" />
+            <Button fx:id="dish1SubButton" layoutX="133.0" layoutY="59.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="-" />
+            <TextField fx:id="dish1QuantityText" alignment="CENTER" layoutX="83.0" layoutY="59.0" prefHeight="26.0" prefWidth="50.0" text="0" />
+            <Label contentDisplay="CENTER" layoutX="216.0" layoutY="19.0" prefHeight="38.0" prefWidth="44.0" text="Блюдо2" />
+            <Button fx:id="dish2AddButton" layoutX="188.0" layoutY="58.0" mnemonicParsing="false" text="+" />
+            <Button fx:id="dish2SubButton" layoutX="263.0" layoutY="58.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="-" />
+            <TextField fx:id="dish2QuantityText" alignment="CENTER" layoutX="213.0" layoutY="58.0" prefHeight="26.0" prefWidth="50.0" text="0" />
+            <Text layoutX="660.0" layoutY="237.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Заказ:" textAlignment="CENTER" wrappingWidth="68.80002441406248">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Text>
+            <TextArea fx:id="orderTextArea" layoutX="653.0" layoutY="248.0" prefHeight="159.0" prefWidth="162.0" promptText="Пока вы ничего не заказали" />
+            <Text fx:id="authorizationText" layoutX="659.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="161.5999999999999">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Text>
             </children>
+         
         </AnchorPane>
-        <Label layoutX="197.0" layoutY="14.0" text="Ресторан" textFill="WHITE">
+        <Label layoutX="343.0" layoutY="7.0" text="Ресторан" textFill="WHITE">
             <font>
                 <Font name="Gabriola" size="55.0" />
             </font>
         </Label>
-        <Button fx:id="loginSignUpButton" layoutX="412.0" layoutY="14.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="173.0" style="-fx-background-color: black;" text="Зарегистрироваться" textFill="WHITE">
+        <Button fx:id="loginSignUpButton" layoutX="655.0" layoutY="30.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="162.0" style="-fx-background-color: black;" text="Зарегистрироваться" textFill="WHITE">
             <font>
                 <Font name="Gabriola" size="18.0" />
             </font>
