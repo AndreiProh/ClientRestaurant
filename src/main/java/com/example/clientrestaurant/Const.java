@@ -8,5 +8,6 @@ public class Const {
     public static final String ADD = "add";
     public static final String SUBTRACT= "sub";
     public static final String ID_DISH = "id";
+    public static final String CONFIRM = "confirm";
 
 }

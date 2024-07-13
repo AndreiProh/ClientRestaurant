@@ -97,6 +97,9 @@ public class ClientSocket {
             } else
                 controller.setLabelWarningText("Неверное имя пользователя или пароль");
         }
+        if (typeOfMessage.equals(Const.ORDER)) {
+
+        }
     }
 
 
