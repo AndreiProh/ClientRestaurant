@@ -1,7 +1,9 @@
 package com.example.clientrestaurant;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,7 +14,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.reflect.Type;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClientSocket {
     private Socket socket;
@@ -94,18 +99,45 @@ public class ClientSocket {
         if (typeOfMessage.equals(Const.AUTHORIZATION)){
             if (jsonMessage.get(Const.STATUS).getAsInt() == 1) {
                 controller.setLabelWarningText("Вы вошли как " + controller.getLogin_field());
+                Platform.runLater(()->controller.authLogInButton.setText("Выйти"));
             } else
                 controller.setLabelWarningText("Неверное имя пользователя или пароль");
         }
         if (typeOfMessage.equals(Const.ORDER)) {
-
+            if (jsonMessage.get("status").getAsInt() == 1) {
+                Platform.runLater(() -> orderConfirmed());
+            }
+        }
+        if (typeOfMessage.equals("update")) {
+            System.out.println("IN UPDATE");
+            controller.listOfDishes = new ArrayList<>();
+            JsonArray jsonArray = jsonMessage.getAsJsonArray("dishes");
+            Type productListType = new TypeToken<ArrayList<Dish>>() {}.getType();
+            controller.listOfDishes = new Gson().fromJson(jsonArray,productListType);
+            for (Dish dish: controller.listOfDishes) {
+                System.out.println(dish);
+            }
+        }
+        if (typeOfMessage.equals("exit")) {
+            Platform.runLater(() -> controller.exitConfirmed());
         }
     }
 
 
     public static synchronized void sendMessage(String message) {
+        System.out.println(message);
         messageBuffer = message;
     }
+
+    private void orderConfirmed() {
+        controller.vBoxOrder.getChildren().clear();
+        controller.vBoxOrder.getChildren().add(new Label("Ваш заказ принят"));
+        controller.buttonPay.setText("Оплатить");
+        controller.buttonPay.setDisable(false);
+        controller.buttonPay.setText("Оплатить");
+        controller.buttonPay.setDisable(false);
+    }
+
 
     public void close() {
         running = false;

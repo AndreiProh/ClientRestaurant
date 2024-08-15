@@ -1,0 +1,72 @@
+.custom-button {
+    -fx-background-color: #FF4500;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+
+.custom-button:hover {
+    -fx-background-color: #FF6347; /* Более светлый оттенок для эффекта при наведении */
+    -fx-cursor: hand;
+}
+
+.custom-button:pressed {
+    -fx-background-color: #CD3700; /* Более темный оттенок для эффекта при нажатии */
+    -fx-padding: 11px 21px; /* Легкий сдвиг для эффекта нажатия */
+}
+.pay-button {
+    -fx-background-color: #FF4500;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+}
+.pay-button:hover {
+    -fx-background-color: #FF6347; /* Более светлый оттенок для эффекта при наведении */
+    -fx-cursor: hand;
+}
+
+.pay-button:pressed {
+    -fx-background-color: #CD3700; /* Более темный оттенок для эффекта при нажатии */
+    -fx-padding: 11px 21px; /* Легкий сдвиг для эффекта нажатия */
+}
+/* Основной стиль для контейнера */
+#container {
+    -fx-background-color: transparent;
+    -fx-background-radius: 10px;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+    -fx-border-color: #FF4500;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+}
+
+/* Стиль для кнопок */
+#leftButton, #rightButton {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: #FF4500;
+    -fx-min-width: 40px;
+    -fx-min-height: 30px;
+    -fx-background-radius: 0;
+}
+
+/* Закругленные края для левой и правой кнопок */
+#leftButton {
+    -fx-background-radius: 10px 0 0 10px;
+}
+
+#rightButton {
+    -fx-background-radius: 0 10px 10px 0;
+}
+
+/* Стиль для текстового поля */
+#textField {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: #FF4500;
+    -fx-padding: 5px;
+    -fx-min-width: 50px;
+    -fx-alignment: center;
+}

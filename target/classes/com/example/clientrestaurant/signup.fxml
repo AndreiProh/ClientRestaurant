@@ -25,14 +25,14 @@
                 </Label>
                 <TextField fx:id="signUpLastName" layoutX="297.0" layoutY="74.0" prefHeight="26.0" prefWidth="203.0" promptText="Фамилия" />
                 <TextField fx:id="signUpFirstName" layoutX="297.0" layoutY="124.0" prefHeight="26.0" prefWidth="203.0" promptText="Имя" />
-            <Label fx:id="labelWarningText" layoutX="132.0" layoutY="167.0" prefHeight="26.0" prefWidth="280.0">
+            <Label fx:id="labelWarningText" layoutX="132.0" layoutY="167.0" prefHeight="26.0" prefWidth="365.0">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
             </children>
         </AnchorPane>
-        <Label layoutX="154.0" layoutY="7.0" text="Ресторан" textFill="WHITE">
+        <Label layoutX="197.0" layoutY="7.0" text="Ресторан" textFill="WHITE">
             <font>
                 <Font name="Gabriola" size="55.0" />
             </font>

@@ -5,6 +5,6 @@ module com.example.clientrestaurant {
     requires org.json;
 
 
-    opens com.example.clientrestaurant to javafx.fxml;
+    opens com.example.clientrestaurant to javafx.fxml, com.google.gson;
     exports com.example.clientrestaurant;
 }

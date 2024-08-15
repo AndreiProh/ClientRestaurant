@@ -2,12 +2,16 @@ package com.example.clientrestaurant;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,9 +20,12 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Controller {
 
@@ -32,7 +39,7 @@ public class Controller {
     private AnchorPane anchorPane;
 
     @FXML
-    private Button authLogInButton;
+    public Button authLogInButton;
 
     @FXML
     private Text authorizationText;
@@ -41,7 +48,7 @@ public class Controller {
     private Button dishAddButton1;
 
     @FXML
-    private Button buttonPay;
+    public Button buttonPay;
 
     @FXML
     private Button dishAddButton10;
@@ -200,9 +207,13 @@ public class Controller {
     private ScrollPane scrollPaneOrder;
 
     @FXML
-    private VBox vBoxOrder;
+    public VBox vBoxOrder;
 
-    private Map<String, Integer> order;
+    private double totalCostOrder;
+
+    private Map<String,Integer> order;
+
+    public List<Dish> listOfDishes;
 
     private ClientSocket clientSocket;
 
@@ -228,24 +239,31 @@ public class Controller {
                 button.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleButtonAction);
             }
         }
+        order = new HashMap<String,Integer>();
+
         //Кнопка "Войти":
             authLogInButton.setOnAction(actionEvent -> {
                 String userName = login_field.getText().trim();
                 String password = password_field.getText().trim();
                 setLabelWarningText("");
-
                 if (checkAllStringFilled(userName, password)) {
                     JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("type", "authorization");
+                    if (authLogInButton.getText().equals("Войти")) {
+                        jsonObject.addProperty("type", "authorization");
+                    } else {
+                        jsonObject.addProperty("type", "exit");
+                    }
                     jsonObject.addProperty("username", userName);
                     jsonObject.addProperty("password", password);
                     ClientSocket.sendMessage(new Gson().toJson(jsonObject));
                 } else
                     setLabelWarningText("Заполните все поля");
+
             });
         // Кнопка "Зарегистрироваться":
             loginSignUpButton.setOnAction(actionEvent -> {
-                loginSignUpButton.getScene().getWindow().hide();
+                Stage mainStage = (Stage)loginSignUpButton.getScene().getWindow();
+                mainStage.hide();
                 FXMLLoader loader = new FXMLLoader(ClientApplication.class.getResource("signup.fxml"));
                 try {
                     loader.load();
@@ -262,6 +280,12 @@ public class Controller {
                 SignUpController signUpController = loader.getController();
                 signUpController.setController(this);
                 clientSocket.setSignUpController(signUpController);
+                stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                    @Override
+                    public void handle(WindowEvent windowEvent) {
+                        mainStage.show();
+                    }
+                });
                 stage.showAndWait();
             });
 
@@ -289,19 +313,89 @@ public class Controller {
         sendMsg(jsonObject);
     }
 
-    private void addDishInOrderOnScreen(int currentValue, Label targetLabel) {
-        String nameOfDish = targetLabel.getText();
+    public void addDishInOrderOnScreen(int currentValue, Label targetLabel) {
+        Label nameOfDish = new Label(targetLabel.getText());
+        String name = nameOfDish.getText();
+        nameOfDish.setFont(new Font("Arial",10));
+        nameOfDish.setStyle("-fx-font-weight: bold;");
+        nameOfDish.setStyle("-fx-text-fill: #FF4500;");
+        boolean nameExist = false;
+        int newValue = currentValue + 1;
+        double price = getDishFromList(name).getPrice();
+        String itemOfOrder = name + "       x" + newValue + "     " + price * newValue + "р.";
+        for (Label label : vBoxOrder.getChildren().filtered(node -> node instanceof Label).toArray(new Label[0])) {
+            if (label.getText().startsWith(nameOfDish.getText())) {
+                label.setText(itemOfOrder);
+                order.put(name, newValue);
+                nameExist = true;
+                break;
+            }
+        }
+        if (!nameExist) {
+            nameOfDish.setText(itemOfOrder);
+            vBoxOrder.getChildren().add(nameOfDish);
+            order.put(name, newValue);
+        }
+        totalCostOrder +=price;
+        buttonPay.setText("Оплатить " + totalCostOrder + " руб.");
 
     }
 
+    private Dish getDishFromList(String name) {
+        Dish dish = new Dish();
+        for (Dish item : listOfDishes) {
+            if (item.getName().equals(name)) {
+                dish = item;
+                break;
+            }
+        }
+        return dish;
+    }
+
+    private void subtractDishFromOrderOnScreen(Label targetLabel) {
+        String dishName = targetLabel.getText();
+        double price = getDishFromList(dishName).getPrice();
+        for (Label label : vBoxOrder.getChildren().filtered(node -> node instanceof Label).toArray(new Label[0])) {
+            if (label.getText().startsWith(dishName)) {
+                // Извлекаем текущее количество
+                int currentValue = order.get(dishName);
+                // Уменьшаем количество на 1
+                currentValue--;
+
+                if (currentValue > 0) {
+                    // Обновляем текст с новым количеством
+                    label.setText(dishName + "      x" + currentValue + "     " + price * currentValue + " р.");
+                    order.put(dishName, currentValue);
+                } else {
+                    // Удаляем элемент, если количество равно нулю
+                    vBoxOrder.getChildren().remove(label);
+                    order.remove(dishName);
+                }
+                break;
+            }
+        }
+        totalCostOrder -= price;
+        buttonPay.setText("Оплатить " + totalCostOrder + " руб.");
+    }
+
+
     private void payOrder() {
+        for (Map.Entry<String,Integer> entry: order.entrySet()) {
+            System.out.println(entry.getKey() + ":" + entry.getValue() + "  ");
+        }
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("type", Const.ORDER);
         jsonObject.addProperty(Const.STATUS, Const.CONFIRM);
+        JsonElement jsonElementOrder = new Gson().toJsonTree(order);
+        jsonObject.add("dishes",jsonElementOrder);
         sendMsg(jsonObject);
+        totalCostOrder = 0;
+        buttonPay.setDisable(true);
+
     }
 
     private void sendMsg(JsonObject jsonObject) {
+        System.out.println(jsonObject);
         ClientSocket.sendMessage(new Gson().toJson(jsonObject));
     }
 
@@ -325,16 +419,29 @@ public class Controller {
         if (targetTextField != null) {
             int currentValue = Integer.parseInt(targetTextField.getText());
             if (buttonId.contains("Add")) {
-                addDishInOrderOnServer(numberCell + 1);
+                //addDishInOrderOnServer(numberCell + 1);
                 addDishInOrderOnScreen(currentValue, targetLabel);
                 targetTextField.setText(String.valueOf(currentValue + 1));
 
             } else if (currentValue != 0) {
-                subtractDishFromOrderOnServer(numberCell + 1);
+                //subtractDishFromOrderOnServer(numberCell + 1);
+                subtractDishFromOrderOnScreen(targetLabel);
                 targetTextField.setText(String.valueOf(currentValue - 1));
             }
         }
     }
+    public  void updateListOfDish() {
+        System.out.println("updateListOfDish");
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("type", "update");
+        sendMsg(jsonObject);
+    }
+    public void exitConfirmed() {
+        this.login_field.setText("");
+        this.password_field.setText("");
+        this.authLogInButton.setText("Войти");
+    }
+
 
 
 
