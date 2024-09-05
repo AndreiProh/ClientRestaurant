@@ -88,11 +88,17 @@
                   <TextField fx:id="dishQuantityText12" alignment="CENTER" layoutX="448.0" layoutY="198.0" prefHeight="26.0" prefWidth="50.0" text="0" />
                   <Button fx:id="dishAddButton12" layoutX="426.0" layoutY="198.0" mnemonicParsing="false" text="+" />
                   <Button fx:id="dishSubButton12" layoutX="495.0" layoutY="197.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="25.0" text="-" />
-                   <HBox fx:id="container" alignment="CENTER" layoutX="27.0" layoutY="245.0" prefHeight="26.0" prefWidth="96.0" spacing="0">
-                       <Button fx:id="leftButton" text="-" />
-                       <TextField fx:id="textField" />
-                       <Button fx:id="rightButton" text="+" />
-                   </HBox>
+                   <VBox alignment="CENTER" layoutX="27.0" layoutY="245.0" prefHeight="50.0" prefWidth="120.0" spacing="5">
+                       <!-- Текстовое поле сверху -->
+                       <Label fx:id="dishLabel" styleClass="dishLabel" stylesheets="@styles.css" text="Dish Name" />
+
+                       <!-- Существующий HBox с кнопками и текстовым полем -->
+                       <HBox fx:id="container" alignment="CENTER" prefHeight="26.0" prefWidth="96.0" spacing="0" styleClass="container" stylesheets="@styles.css">
+                           <Button fx:id="leftButton" styleClass="leftButton" stylesheets="@styles.css" text="-" />
+                           <TextField fx:id="textField" styleClass="textField" stylesheets="@styles.css" />
+                           <Button fx:id="rightButton" styleClass="rightButton" stylesheets="@styles.css" text="+" />
+                       </HBox>
+                   </VBox>
                </children>
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
@@ -111,7 +117,7 @@
             </children>
          
         </AnchorPane>
-        <Button fx:id="loginSignUpButton" layoutX="655.0" layoutY="30.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="162.0" style="-fx-background-color: black;" text="Зарегистрироваться" textFill="WHITE">
+        <Button fx:id="loginSignUpButton" layoutX="655.0" layoutY="30.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="162.0" styleClass="logUpButton" stylesheets="@styles.css" text="Зарегистрироваться" textFill="WHITE">
             <font>
                 <Font name="Gabriola" size="18.0" />
             </font>

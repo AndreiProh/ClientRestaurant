@@ -67,7 +67,7 @@ public class ClientSocket {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Platform.runLater(() -> controller.setLabelWarningText("Сервер недоступен"));
             }
         }).start();
     }
@@ -105,7 +105,7 @@ public class ClientSocket {
         }
         if (typeOfMessage.equals(Const.ORDER)) {
             if (jsonMessage.get("status").getAsInt() == 1) {
-                Platform.runLater(() -> orderConfirmed());
+                Platform.runLater(() -> controller.orderConfirmed());
             }
         }
         if (typeOfMessage.equals("update")) {
@@ -117,6 +117,7 @@ public class ClientSocket {
             for (Dish dish: controller.listOfDishes) {
                 System.out.println(dish);
             }
+            Platform.runLater(() -> controller.populateScrollPaneWithDishes(controller.listOfDishes));
         }
         if (typeOfMessage.equals("exit")) {
             Platform.runLater(() -> controller.exitConfirmed());
@@ -129,14 +130,14 @@ public class ClientSocket {
         messageBuffer = message;
     }
 
-    private void orderConfirmed() {
-        controller.vBoxOrder.getChildren().clear();
-        controller.vBoxOrder.getChildren().add(new Label("Ваш заказ принят"));
-        controller.buttonPay.setText("Оплатить");
-        controller.buttonPay.setDisable(false);
-        controller.buttonPay.setText("Оплатить");
-        controller.buttonPay.setDisable(false);
-    }
+//    private void orderConfirmed() {
+//        controller.vBoxOrder.getChildren().clear();
+//        controller.vBoxOrder.getChildren().add(new Label("Ваш заказ принят"));
+//        controller.buttonPay.setText("Оплатить");
+//        controller.buttonPay.setDisable(false);
+//        controller.buttonPay.setText("Оплатить");
+//        controller.buttonPay.setDisable(false);
+//    }
 
 
     public void close() {

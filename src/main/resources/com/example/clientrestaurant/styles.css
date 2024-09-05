@@ -5,6 +5,16 @@
     -fx-background-radius: 5px;
     -fx-border-radius: 5px;
 }
+.logUpButton {
+    -fx-background-color: #FF6347;
+}
+.logUpButton: hover {
+    -fx-background-color: #FF4500;
+    -fx-cursor: hand;
+}
+.logUpButton: pressed {
+    -fx-background-color: #CD3700;
+}
 
 .custom-button:hover {
     -fx-background-color: #FF6347; /* Более светлый оттенок для эффекта при наведении */
@@ -32,18 +42,18 @@
     -fx-padding: 11px 21px; /* Легкий сдвиг для эффекта нажатия */
 }
 /* Основной стиль для контейнера */
-#container {
+.container {
     -fx-background-color: transparent;
     -fx-background-radius: 10px;
     -fx-padding: 0;
     -fx-spacing: 0;
     -fx-border-color: #FF4500;
-    -fx-border-width: 2px;
+    -fx-border-width: 1px;
     -fx-border-radius: 10px;
 }
 
 /* Стиль для кнопок */
-#leftButton, #rightButton {
+.leftButton, .rightButton {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-text-fill: #FF4500;
@@ -53,20 +63,35 @@
 }
 
 /* Закругленные края для левой и правой кнопок */
-#leftButton {
+.leftButton {
     -fx-background-radius: 10px 0 0 10px;
 }
 
-#rightButton {
+.rightButton {
     -fx-background-radius: 0 10px 10px 0;
+}
+.leftButton:hover,.rightButton:hover {
+    -fx-background-color: #FFD5C2;
+    -fx-cursor: hand;
+}
+
+.leftButton:pressed,.rightButton:pressed {
+    -fx-background-color: #FFC4B0;
+    -fx-cursor: hand;
 }
 
 /* Стиль для текстового поля */
-#textField {
+.textField {
     -fx-background-color: transparent;
     -fx-border-width: 0;
     -fx-text-fill: #FF4500;
     -fx-padding: 5px;
-    -fx-min-width: 50px;
+    -fx-min-width: 40px;
     -fx-alignment: center;
+}
+/* Стиль для Label */
+.dishLabel {
+    -fx-text-fill: "Black";
+    -fx-font-size: 14px;
+    -fx-font-family: "Gabriola"
 }

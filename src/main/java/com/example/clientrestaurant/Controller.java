@@ -2,10 +2,7 @@ package com.example.clientrestaurant;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -14,14 +11,14 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -380,17 +377,20 @@ public class Controller {
 
 
     private void payOrder() {
-        for (Map.Entry<String,Integer> entry: order.entrySet()) {
-            System.out.println(entry.getKey() + ":" + entry.getValue() + "  ");
+
+        if (!order.isEmpty()) {
+            for (Map.Entry<String,Integer> entry: order.entrySet()) {
+                System.out.println(entry.getKey() + ":" + entry.getValue() + "  ");
+            }
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("type", Const.ORDER);
+            jsonObject.addProperty(Const.STATUS, Const.CONFIRM);
+            JsonElement jsonElementOrder = new Gson().toJsonTree(order);
+            jsonObject.add("dishes",jsonElementOrder);
+            sendMsg(jsonObject);
+            totalCostOrder = 0;
+            buttonPay.setDisable(true);
         }
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("type", Const.ORDER);
-        jsonObject.addProperty(Const.STATUS, Const.CONFIRM);
-        JsonElement jsonElementOrder = new Gson().toJsonTree(order);
-        jsonObject.add("dishes",jsonElementOrder);
-        sendMsg(jsonObject);
-        totalCostOrder = 0;
-        buttonPay.setDisable(true);
 
     }
 
@@ -436,10 +436,133 @@ public class Controller {
         jsonObject.addProperty("type", "update");
         sendMsg(jsonObject);
     }
+
+    public void populateScrollPaneWithDishes(List<Dish> dishes) {
+        // Очистка AnchorPane
+        anchorPane.getChildren().clear();
+
+        // Создание вертикального ScrollPane
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setPannable(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollPane.setFitToWidth(true);
+
+        // Установка размера ScrollPane
+        scrollPane.setPrefSize(anchorPane.getPrefWidth(), anchorPane.getPrefHeight());
+
+        // Создание GridPane для размещения контейнеров
+        GridPane gridPane = new GridPane();
+        gridPane.setPadding(new Insets(10));
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+
+        // Размеры контейнера (1/4 от ширины AnchorPane, с учетом отступов)
+        double containerSize = anchorPane.getPrefWidth() / 4 - 20; // Учитывая отступы
+
+        // Создание и добавление контейнеров на GridPane
+        int col = 0;
+        int row = 0;
+        for (Dish dish : dishes) {
+            VBox dishContainer = createDishContainer(dish);
+
+            // Установка размера контейнера
+            dishContainer.setPrefSize(containerSize, containerSize);
+
+            // Добавление границ к контейнеру
+            //dishContainer.setStyle("-fx-border-color: #FF4500; -fx-border-width: 1px;");
+
+            // Добавление контейнера на GridPane
+            gridPane.add(dishContainer, col, row);
+
+            // Обновление координат для размещения контейнеров по 4 в ряд
+            col++;
+            if (col == 4) {
+                col = 0;
+                row++;
+            }
+        }
+
+        // Добавление GridPane в ScrollPane
+        scrollPane.setContent(gridPane);
+
+        // Добавление ScrollPane на AnchorPane
+        anchorPane.getChildren().add(scrollPane);
+        anchorPane.layout();
+    }
+
+
+    public VBox createDishContainer(Dish dish) {
+        // Создание Label с названием блюда
+        Label dishLabel = new Label(dish.getName());
+        dishLabel.setId("dishLabel" + dish.getId());
+        dishLabel.getStyleClass().add("dishLabel");
+        dishLabel.applyCss();
+        dishLabel.setWrapText(true);  // Включаем перенос текста
+        dishLabel.setMinHeight(60);
+
+        Tooltip tooltip = new Tooltip(Double.toString(dish.getPrice()));
+        Tooltip.install(dishLabel, tooltip);
+
+        // Создание кнопок и текстового поля
+        Button leftButton = new Button("-");
+        leftButton.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleButtonAction);
+        leftButton.setId("dishSubButton" + dish.getId());
+        leftButton.getStyleClass().add("leftButton");
+
+        TextField textField = new TextField("0"); // Здесь можно установить начальное значение
+        textField.setId("dishQuantityText" + dish.getId());
+        textField.setEditable(false);
+        textField.getStyleClass().add("textField");
+
+        Button rightButton = new Button("+");
+        rightButton.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleButtonAction);
+        rightButton.setId("dishAddButton" + dish.getId());
+        rightButton.getStyleClass().add("rightButton");
+
+        // Создание HBox, который будет содержать кнопки и текстовое поле
+        HBox hBox = new HBox(leftButton, textField, rightButton);
+        hBox.getStyleClass().add("container");
+        hBox.setSpacing(0);
+        hBox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Создание VBox, который будет содержать Label и HBox
+        VBox vBox = new VBox(dishLabel, hBox);
+        vBox.setSpacing(5);
+        vBox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        // Установка стилей для VBox
+        vBox.setPrefHeight(50);
+        vBox.setPrefWidth(120);
+
+        return vBox;
+    }
+
     public void exitConfirmed() {
         this.login_field.setText("");
         this.password_field.setText("");
         this.authLogInButton.setText("Войти");
+        this.vBoxOrder.getChildren().clear();
+    }
+    public void resetTextFields(Parent parent) {
+        System.out.println("IN RESET TEXT");
+        for (Node node : parent.getChildrenUnmodifiable()) {
+            if (node instanceof TextField) {
+                TextField textField = (TextField) node;
+                if (textField.getId().startsWith("dishQuantityText")) {
+                    textField.setText("0");
+                }
+            } else if (node instanceof Parent) {
+                resetTextFields((Parent) node);
+            }
+        }
+    }
+    public void orderConfirmed() {
+        vBoxOrder.getChildren().clear();
+        vBoxOrder.getChildren().add(new Label("Ваш заказ принят"));
+        buttonPay.setText("Оплатить");
+        buttonPay.setDisable(false);
+        order.clear();
+        resetTextFields(anchorPane);
     }
 
 
