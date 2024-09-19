@@ -7,10 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import org.json.JSONObject;
 
 
@@ -32,6 +29,16 @@ public class SignUpController {
 
     @FXML
     private TextField signUpLastName;
+
+    @FXML
+    private TextField signUpAddress;
+
+    @FXML
+    private ComboBox<?> signUpDistrict;
+
+    @FXML
+    private TextField signUpEmail;
+
 
     @FXML
     private PasswordField signupPasswordField;

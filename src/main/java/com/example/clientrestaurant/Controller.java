@@ -537,6 +537,138 @@ public class Controller {
         return vBox;
     }
 
+    public void populateScrollPaneWithOrders(List<OrderDTO> orders) {
+        // Очищаем AnchorPane от предыдущих элементов
+        anchorPane.getChildren().clear();
+
+        // Создаем ScrollPane и VBox для размещения заказов
+        ScrollPane scrollPane = new ScrollPane();
+        VBox vbox = new VBox(10);  // VBox для упорядочивания заказов по вертикали
+        scrollPane.setContent(vbox);
+        scrollPane.setFitToWidth(true);
+
+        // Размеры ScrollPane
+        scrollPane.setPrefWidth(anchorPane.getPrefWidth());
+        scrollPane.setPrefHeight(anchorPane.getPrefHeight());
+
+        // Добавляем ScrollPane в AnchorPane
+        anchorPane.getChildren().add(scrollPane);
+
+        // Добавляем заказы в VBox
+        for (OrderDTO order : orders) {
+            // Создаем контейнер VBox для каждого заказа (чтобы каждая деталь заказа была вертикально)
+            VBox orderContainer = new VBox(5);  // VBox для вертикальной компоновки
+            orderContainer.setStyle("-fx-padding: 10; -fx-border-color: #FF4500; -fx-border-radius: 10; -fx-background-radius: 10;");
+
+            // ID заказа
+            Label orderIdLabel = new Label("Order ID: " + order.getIdBuy());
+            orderIdLabel.setStyle("-fx-font-weight: bold;");
+
+            // Список блюд и их количества
+            VBox dishListContainer = new VBox(5);  // VBox для упорядочивания списка блюд по вертикали
+            for (Map.Entry<String, Integer> entry : order.getDishes().entrySet()) {
+                String dishName = entry.getKey();
+                Integer quantity = entry.getValue();
+
+                Label dishLabel = new Label(dishName + " x " + quantity);
+                dishLabel.setStyle("-fx-font-size: 12px;");
+                dishListContainer.getChildren().add(dishLabel);
+            }
+
+            // Пожелания к заказу
+            Label notesLabel = new Label("Notes: " + order.getOrderNotes());
+            notesLabel.setStyle("-fx-font-style: italic; -fx-font-size: 12px;");
+
+            // Время заказа
+            Label orderTimeLabel = new Label("Order Time: " + order.getOrderDateTime());
+            orderTimeLabel.setStyle("-fx-font-size: 12px;");
+
+            // Кнопка "Подтвердить"
+            Button confirmButton = new Button("Подтвердить");
+            confirmButton.setStyle("-fx-background-color: #FF6347; -fx-text-fill: white;");
+            confirmButton.setOnAction(event -> {
+                // Действие при нажатии кнопки подтверждения заказа
+                System.out.println("Order ID " + order.getIdBuy() + " confirmed!");
+            });
+
+            // Добавляем все компоненты в orderContainer
+            orderContainer.getChildren().addAll(orderIdLabel, dishListContainer, notesLabel, orderTimeLabel, confirmButton);
+
+            // Добавляем orderContainer в vbox (основной контейнер для всех заказов)
+            vbox.getChildren().add(orderContainer);
+        }
+    }
+
+    public void populateScrollPaneWithDeliveries(List<Delivery> deliveries) {
+        // Очищаем AnchorPane от предыдущих элементов
+        anchorPane.getChildren().clear();
+
+        // Создаем ScrollPane и VBox для размещения доставок
+        ScrollPane scrollPane = new ScrollPane();
+        VBox vbox = new VBox(10);  // VBox для упорядочивания доставок по вертикали
+        scrollPane.setContent(vbox);
+        scrollPane.setFitToWidth(true);
+
+        // Размеры ScrollPane
+        scrollPane.setPrefWidth(anchorPane.getPrefWidth());
+        scrollPane.setPrefHeight(anchorPane.getPrefHeight());
+
+        // Добавляем ScrollPane в AnchorPane
+        anchorPane.getChildren().add(scrollPane);
+
+        // Добавляем доставки в VBox
+        for (Delivery delivery : deliveries) {
+            // Создаем контейнер VBox для каждой доставки (чтобы каждая деталь доставки была вертикально)
+            VBox deliveryContainer = new VBox(5);  // VBox для вертикальной компоновки
+            deliveryContainer.setStyle("-fx-padding: 10; -fx-border-color: #FF4500; -fx-border-radius: 10; -fx-background-radius: 10;");
+
+            // ID доставки
+            Label deliveryIdLabel = new Label("Delivery ID: " + delivery.getId());
+            deliveryIdLabel.setStyle("-fx-font-weight: bold;");
+
+            // ID заказа
+            Label orderIdLabel = new Label("Order ID: " + delivery.getOrderId());
+
+            // Адрес доставки
+            Label addressLabel = new Label("Address: " + delivery.getDeliveryAddress());
+
+            // Статус доставки
+            Label statusLabel = new Label("Status: " + delivery.getDeliveryStatus());
+
+            // Время назначения доставки
+            Label assignedTimeLabel = new Label("Assigned Time: " + delivery.getStartDeliveryTime());
+
+            // Кнопка "Подтвердить получение"
+            Button confirmReceiptButton = new Button("Подтвердить получение");
+            confirmReceiptButton.setStyle("-fx-background-color: #FF6347; -fx-text-fill: white;");
+            confirmReceiptButton.setOnAction(event -> {
+                // Логика при подтверждении получения заказа
+                delivery.setDeliveryStatus("Получен");
+                statusLabel.setText("Status: " + delivery.getDeliveryStatus());
+                System.out.println("Delivery ID " + delivery.getDeliveryStatus() + " marked as 'Получен'");
+            });
+
+            // Кнопка "Подтвердить доставку"
+            Button confirmDeliveryButton = new Button("Подтвердить доставку");
+            confirmDeliveryButton.setStyle("-fx-background-color: #FF6347; -fx-text-fill: white;");
+            confirmDeliveryButton.setOnAction(event -> {
+                // Логика при подтверждении доставки
+                delivery.setDeliveryStatus("Доставлен");
+                statusLabel.setText("Status: " + delivery.getDeliveryStatus());
+                System.out.println("Delivery ID " + delivery.getDeliveryStatus() + " marked as 'Доставлен'");
+            });
+
+            // Добавляем все компоненты в deliveryContainer
+            deliveryContainer.getChildren().addAll(
+                    deliveryIdLabel, orderIdLabel, addressLabel, statusLabel, assignedTimeLabel,
+                    confirmReceiptButton, confirmDeliveryButton
+            );
+
+            // Добавляем deliveryContainer в vbox (основной контейнер для всех доставок)
+            vbox.getChildren().add(deliveryContainer);
+        }
+    }
+
     public void exitConfirmed() {
         this.login_field.setText("");
         this.password_field.setText("");

@@ -97,8 +97,25 @@ public class ClientSocket {
         }
 
         if (typeOfMessage.equals(Const.AUTHORIZATION)){
-            if (jsonMessage.get(Const.STATUS).getAsInt() == 1) {
-                controller.setLabelWarningText("Вы вошли как " + controller.getLogin_field());
+            int statusOfUser = jsonMessage.get(Const.STATUS).getAsInt();
+            if (statusOfUser != 0) {
+                if (statusOfUser == 1) {
+                    controller.setLabelWarningText("Вы вошли как " + controller.getLogin_field());
+                }
+                if (statusOfUser == 2) {
+                    controller.setLabelWarningText("Вы вошли как Администратор(" + controller.getLogin_field() + ")");
+                    JsonArray jsonArray = jsonMessage.getAsJsonArray("orders");
+                    Type orderListType = new TypeToken<ArrayList<OrderDTO>>() {}.getType();
+                    Platform.runLater(() ->
+                            controller.populateScrollPaneWithOrders(new Gson().fromJson(jsonArray, orderListType)));
+                }
+                if (statusOfUser == 3) {
+                    controller.setLabelWarningText("Вы вошли как Курьер (" + controller.getLogin_field() + ")");
+                    JsonArray jsonArray = jsonMessage.getAsJsonArray("deliveries");
+                    Type deliveryListType = new TypeToken<ArrayList<Delivery>>() {}.getType();
+                    Platform.runLater(() ->
+                            controller.populateScrollPaneWithDeliveries(new Gson().fromJson(jsonArray, deliveryListType)));
+                }
                 Platform.runLater(()->controller.authLogInButton.setText("Выйти"));
             } else
                 controller.setLabelWarningText("Неверное имя пользователя или пароль");
